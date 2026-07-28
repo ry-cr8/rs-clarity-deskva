@@ -116,8 +116,28 @@ body {
   background: var(--paper);
   line-height: 1.6;
   transition:
-    background-color 0.25s ease,
-    color 0.25s ease;
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+html,
+body,
+header,
+nav,
+section,
+footer,
+button,
+a,
+input,
+textarea,
+select {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
 }
 h1,
 h2 {
@@ -407,26 +427,27 @@ nav {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-width: auto;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
   border: 1px solid var(--line);
-  background: linear-gradient(135deg, var(--surface-2), var(--surface-3));
-  color: var(--ink);
-  padding: 9px 14px;
-  border-radius: 8px;
+  background: var(--surface-3);
+  color: var(--ink-soft);
+  padding: 0;
+  border-radius: 50%;
   font-family: "Poppins", sans-serif;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 12px -6px var(--shadow-color);
   transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    background-color 0.2s ease;
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 .theme-toggle:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 16px -8px var(--shadow-color);
+  color: var(--navy);
+  background: var(--surface-2);
+  border-color: var(--navy);
 }
 .theme-toggle:focus-visible {
   outline: 2px solid var(--navy);
@@ -1176,11 +1197,12 @@ section {
 
 /* CONTACT */
 .contact {
-  background: var(--navy-deep);
-  color: var(--white);
+  background: linear-gradient(135deg, var(--surface-2), var(--surface));
+  color: var(--ink);
+  border-top: 1px solid var(--line);
 }
 .contact h2 {
-  color: var(--white);
+  color: var(--navy);
 }
 .contact .eyebrow {
   color: var(--gold);
@@ -1197,10 +1219,10 @@ section {
   }
 }
 .contact-info p {
-  color: #c3cfe3;
+  color: var(--ink-soft);
 }
 .contact-info a {
-  color: var(--gold);
+  color: var(--navy);
   font-weight: 600;
 }
 .info-line {
@@ -1219,7 +1241,7 @@ form {
   display: block;
   font-family: "Poppins", sans-serif;
   font-size: 0.82rem;
-  color: #c3cfe3;
+  color: var(--ink-soft);
   margin-bottom: 6px;
   letter-spacing: 0.03em;
 }
@@ -1228,11 +1250,21 @@ form {
   width: 100%;
   padding: 12px 14px;
   border-radius: 7px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--white);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
   font-family: "Montserrat", sans-serif;
   font-size: 0.95rem;
+}
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--ink-soft);
+}
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--navy);
+  box-shadow: 0 0 0 2px rgba(30, 53, 88, 0.12);
 }
 .field textarea {
   resize: vertical;
@@ -1263,10 +1295,10 @@ form {
 }
 
 footer {
-  background: var(--navy-deep);
-  color: #8fa0bd;
+  background: var(--surface-2);
+  color: var(--ink-soft);
   padding: 32px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--line);
 }
 footer .wrap {
   display: flex;
@@ -1278,7 +1310,7 @@ footer .wrap {
   font-family: "Poppins", sans-serif;
 }
 footer a {
-  color: #c3cfe3;
+  color: var(--navy);
 }
 
 /* Shared state helpers */
