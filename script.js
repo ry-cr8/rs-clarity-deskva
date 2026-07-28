@@ -1,4 +1,4 @@
-﻿const themeToggle = document.getElementById("themeToggle");
+const themeToggle = document.getElementById("themeToggle");
 const root = document.documentElement;
 
 function applyTheme(theme) {
@@ -22,12 +22,28 @@ const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
   : "light";
 applyTheme(savedTheme || preferredTheme);
 
-document.getElementById("navToggle").addEventListener("click", function () {
-  document.getElementById("navLinks").classList.toggle("open");
-});
-document.querySelectorAll(".navlinks a").forEach(function (a) {
+const navToggle = document.getElementById("navToggle");
+const navLinks = document.getElementById("navLinks");
+
+function closeMobileNav() {
+  if (navLinks) navLinks.classList.remove("open");
+  if (navToggle) {
+    navToggle.classList.remove("open");
+    navToggle.setAttribute("aria-expanded", "false");
+  }
+}
+
+if (navToggle) {
+  navToggle.addEventListener("click", function () {
+    const isOpen = navLinks.classList.toggle("open");
+    navToggle.classList.toggle("open", isOpen);
+    navToggle.setAttribute("aria-expanded", String(isOpen));
+  });
+}
+
+document.querySelectorAll(".navlinks a, .nav-dropdown-menu a").forEach(function (a) {
   a.addEventListener("click", function () {
-    document.getElementById("navLinks").classList.remove("open");
+    closeMobileNav();
     closeNavDropdown();
   });
 });
@@ -54,6 +70,7 @@ document.addEventListener("click", function (e) {
 
 document.addEventListener("keydown", function (e) {
   if (e.key === "Escape") {
+    closeMobileNav();
     closeNavDropdown();
   }
 });
