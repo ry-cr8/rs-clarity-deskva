@@ -1,10 +1,67 @@
-﻿document.getElementById("navToggle").addEventListener("click", function () {
+﻿const themeToggle = document.getElementById("themeToggle");
+const root = document.documentElement;
+
+function applyTheme(theme) {
+  root.setAttribute("data-theme", theme);
+  if (themeToggle) {
+    const isDark = theme === "dark";
+    themeToggle.setAttribute("aria-pressed", String(isDark));
+    themeToggle.innerHTML =
+      '<span class="theme-toggle-icon" aria-hidden="true">' +
+      (isDark ? "☀️" : "🌙") +
+      '</span><span class="theme-toggle-text">' +
+      (isDark ? "Light" : "Dark") +
+      "</span>";
+  }
+  localStorage.setItem("theme", theme);
+}
+
+const savedTheme = localStorage.getItem("theme");
+const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+  ? "dark"
+  : "light";
+applyTheme(savedTheme || preferredTheme);
+
+document.getElementById("navToggle").addEventListener("click", function () {
   document.getElementById("navLinks").classList.toggle("open");
 });
 document.querySelectorAll(".navlinks a").forEach(function (a) {
   a.addEventListener("click", function () {
     document.getElementById("navLinks").classList.remove("open");
+    closeNavDropdown();
   });
+});
+
+const navDropdown = document.getElementById("navDropdown");
+const navDropdownToggle = document.getElementById("navDropdownToggle");
+
+function closeNavDropdown() {
+  navDropdown.classList.remove("open");
+  navDropdownToggle.setAttribute("aria-expanded", "false");
+}
+
+navDropdownToggle.addEventListener("click", function (e) {
+  e.stopPropagation();
+  const isOpen = navDropdown.classList.toggle("open");
+  navDropdownToggle.setAttribute("aria-expanded", String(isOpen));
+});
+
+document.addEventListener("click", function (e) {
+  if (!navDropdown.contains(e.target)) {
+    closeNavDropdown();
+  }
+});
+
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") {
+    closeNavDropdown();
+  }
+});
+
+themeToggle.addEventListener("click", function () {
+  const nextTheme =
+    root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  applyTheme(nextTheme);
 });
 
 (function () {
