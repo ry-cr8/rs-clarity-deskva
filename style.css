@@ -740,8 +740,9 @@ section {
   max-width: 48ch;
 }
 .timeline {
+  --tl-padding: 28px;
   border-left: 2px solid var(--line);
-  padding-left: 28px;
+  padding-left: var(--tl-padding);
   position: relative;
 }
 .tl-item {
@@ -754,14 +755,16 @@ section {
 .tl-item::before {
   content: "";
   position: absolute;
-  left: -34px;
+  left: calc(-1 * var(--tl-padding) + 1px);
   top: 4px;
+  transform: translateX(-50%);
   width: 12px;
   height: 12px;
   border-radius: 50%;
   background: var(--gold);
-  border: 3px solid var(--white);
-  box-shadow: 0 0 0 2px var(--navy);
+  border: 3px solid var(--paper);
+  box-shadow: 0 0 0 2px var(--line);
+  z-index: 2;
 }
 .tl-item .tl-date {
   font-family: "Poppins", sans-serif;
@@ -1540,10 +1543,7 @@ footer a {
     height: 68px;
   }
   .timeline {
-    padding-left: 22px;
-  }
-  .tl-item::before {
-    left: -28px;
+    --tl-padding: 22px;
   }
   .svc-grid,
   .tools-grid,
