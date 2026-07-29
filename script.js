@@ -229,3 +229,133 @@ if (serviceModal) {
 if (serviceModalClose) {
   serviceModalClose.addEventListener("click", closeServiceModal);
 }
+
+const contactForm = document.getElementById("contactForm");
+const formStatus = document.getElementById("formStatus");
+const submitBtn = document.getElementById("submitBtn");
+let statusTimeout = null;
+
+if (contactForm) {
+  contactForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    if (statusTimeout) {
+      clearTimeout(statusTimeout);
+    }
+
+    // 1. Honeypot check (Spam bot trap)
+    const botcheck = contactForm.querySelector('input[name="botcheck"]');
+    if (botcheck && botcheck.checked) {
+      if (formStatus) {
+        formStatus.className = "form-status success";
+        formStatus.textContent = "Thank you! Your message has been sent successfully.";
+      }
+      contactForm.reset();
+      return;
+    }
+
+    // 2. Client-side Rate Limiting (30-second cooldown per session)
+    const COOLDOWN_MS = 30000;
+    const lastSubmit = localStorage.getItem("lastFormSubmitTime");
+    const now = Date.now();
+    if (lastSubmit && now - parseInt(lastSubmit, 10) < COOLDOWN_MS) {
+      const secondsLeft = Math.ceil((COOLDOWN_MS - (now - parseInt(lastSubmit, 10))) / 1000);
+      if (formStatus) {
+        formStatus.className = "form-status error";
+        formStatus.textContent = `Please wait ${secondsLeft} second${secondsLeft > 1 ? "s" : ""} before sending another message.`;
+      }
+      return;
+    }
+
+    // 3. Input Sanitization & Validation
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const messageInput = document.getElementById("message");
+
+    const nameVal = nameInput ? nameInput.value.trim() : "";
+    const emailVal = emailInput ? emailInput.value.trim() : "";
+    const messageVal = messageInput ? messageInput.value.trim() : "";
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailVal)) {
+      if (formStatus) {
+        formStatus.className = "form-status error";
+        formStatus.textContent = "Please enter a valid email address.";
+      }
+      return;
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Sending...";
+    }
+
+    if (formStatus) {
+      formStatus.className = "form-status loading";
+      formStatus.textContent = "Sending your message...";
+    }
+
+    const formData = new FormData(contactForm);
+    formData.set("name", nameVal);
+    formData.set("email", emailVal);
+    formData.set("message", messageVal);
+
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      body: formData,
+    })
+      .then(async (response) => {
+        let json = await response.json();
+        if (response.status === 200) {
+          // Record submit timestamp for rate-limiting
+          localStorage.setItem("lastFormSubmitTime", Date.now().toString());
+
+          if (formStatus) {
+            formStatus.className = "form-status success";
+            formStatus.textContent =
+              "Thank you! Your message has been sent successfully. Rosemarie will get back to you soon.";
+
+            statusTimeout = setTimeout(function () {
+              formStatus.classList.add("fade-out");
+              setTimeout(function () {
+                formStatus.className = "form-status";
+                formStatus.textContent = "";
+              }, 500);
+            }, 4500);
+          }
+          contactForm.reset();
+        } else {
+          if (formStatus) {
+            formStatus.className = "form-status error";
+            formStatus.textContent =
+              json.message || "Something went wrong. Please try again.";
+
+            statusTimeout = setTimeout(function () {
+              formStatus.classList.add("fade-out");
+              setTimeout(function () {
+                formStatus.className = "form-status";
+                formStatus.textContent = "";
+              }, 500);
+            }, 6000);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        if (formStatus) {
+          formStatus.className = "form-status error";
+          formStatus.textContent =
+            "Something went wrong. Please check your network connection and try again.";
+        }
+      })
+      .finally(() => {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Send Message";
+        }
+      });
+  });
+}
+
+
+

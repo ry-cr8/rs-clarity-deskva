@@ -1010,10 +1010,27 @@
             </div>
           </div>
           <form
-            action="mailto:rosemariesantossuarez.va@gmail.com"
-            method="post"
-            enctype="text/plain"
+            id="contactForm"
+            action="https://api.web3forms.com/submit"
+            method="POST"
           >
+            <input
+              type="hidden"
+              name="access_key"
+              value="994ca6f6-440d-499b-8596-0905b46c1426"
+            />
+            <input
+              type="hidden"
+              name="subject"
+              value="New Message from RS Clarity Desk VA Website"
+            />
+            <input
+              type="hidden"
+              name="from_name"
+              value="RS Clarity Desk VA Contact Form"
+            />
+            <input type="checkbox" name="botcheck" class="hidden" style="display: none;" />
+
             <div class="field">
               <label for="name">Name</label>
               <input
@@ -1021,6 +1038,7 @@
                 name="name"
                 type="text"
                 placeholder="Your name"
+                maxlength="100"
                 required
               />
             </div>
@@ -1031,6 +1049,7 @@
                 name="email"
                 type="email"
                 placeholder="you@company.com"
+                maxlength="255"
                 required
               />
             </div>
@@ -1040,10 +1059,12 @@
                 id="message"
                 name="message"
                 placeholder="Tell me a bit about what's on your plate..."
+                maxlength="2000"
                 required
               ></textarea>
             </div>
-            <button type="submit" class="btn-gold">Send Message</button>
+            <button type="submit" id="submitBtn" class="btn-gold">Send Message</button>
+            <div id="formStatus" class="form-status" aria-live="polite"></div>
           </form>
         </div>
       </div>
